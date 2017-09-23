@@ -4,24 +4,34 @@ function solution (T) {
   return distinctValuesInTreePath(T)
 }
 
-function distinctValuesInTreePath (tree, count = { count: 0 }) {
-  if (tree === null) {
-    return count.count
+function distinctValuesInTreePath (tree) {
+  const integerCounter = {}
+  const dfsStack = [ { node: tree, distinctsInPath: 0 } ]
+  let largestDistinctCount = 0
+
+  while (dfsStack.length > 0) {
+    const { decrement, node , distinctsInPath: distinctsSoFar } = dfsStack.pop()
+
+    if (decrement != null) {
+      integerCounter[decrement] -= 1
+    } else if (node == null) {
+      if (distinctsSoFar > largestDistinctCount) {
+        largestDistinctCount = distinctsSoFar
+      }
+    } else {
+      const { x, l, r } = node
+
+      dfsStack.push({ decrement: x })
+
+      integerCounter[x] = (integerCounter[x] || 0) + 1
+      const distinctsInPath = distinctsSoFar + (integerCounter[x] === 1 ? 1 : 0)
+
+      dfsStack.push({ node: l, distinctsInPath })
+      dfsStack.push({ node: r, distinctsInPath })
+    }
   }
 
-  if (count[tree.x] == null) {
-    count.count += 1
-    count[tree.x] = true
-  }
-
-  const leftCount = distinctValuesInTreePath(tree.l, copy(count))
-  const rightCount = distinctValuesInTreePath(tree.r, copy(count))
-
-  return Math.max(leftCount, rightCount)
-}
-
-function copy(obj) {
-  return Object.assign({}, obj)
+  return largestDistinctCount
 }
 
 module.exports = solution

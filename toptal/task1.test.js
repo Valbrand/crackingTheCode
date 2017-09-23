@@ -64,13 +64,13 @@ describe('task 1', () => {
   })
 
   it('takes into account element repetition', () => {
-    const tree = createTree([1, [2, [1, null, null], null ], null])
+    const tree = createTree([1, [2, [1, null, null], null ], [3, null, [1, [2, null, null], null]]])
 
-    expect(fn(tree)).toBe(2)
+    expect(fn(tree)).toBe(3)
   })
 
   it('handles huge trees', () => {
-    const size = 10000
+    const size = 1000000
     const tree = createHugeTree(size)
 
     expect(fn(tree)).toBe(size)
