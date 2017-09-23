@@ -23,3 +23,5 @@ function distinctValuesInTreePath (tree, count = { count: 0 }) {
 function copy(obj) {
   return Object.assign({}, obj)
 }
+
+module.exports = solution
