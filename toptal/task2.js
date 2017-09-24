@@ -3,7 +3,7 @@
 function solution (N) {
   const digitsCount = characterCount(N)
 
-  return combinations(digitsCount)
+  return combinations(digitsCount) - combinationsStartingWithZero(digitsCount)
 }
 
 function characterCount (N) {
@@ -26,6 +26,24 @@ function characterCount (N) {
 function combinations (countObject) {
   let repetitionFactor = 1
 
+  for (let i = 0; i <= 9; i++) {
+    const n = countObject[i] || 0
+
+    if (n > 0) {
+      repetitionFactor *= factorial(n)
+    }
+  }
+
+  return factorial(countObject.totalLength) / repetitionFactor
+}
+
+function combinationsStartingWithZero(countObject) {
+  if (countObject[0] === 0) {
+    return 0
+  }
+
+  let repetitionFactor = factorial(countObject[0] - 1)
+
   for (let i = 1; i <= 9; i++) {
     const n = countObject[i] || 0
 
@@ -34,16 +52,21 @@ function combinations (countObject) {
     }
   }
 
-  factorial(countObject.totalLength - countObject[0]) / repetitionFactor
+  return factorial(countObject.totalLength - 1) / repetitionFactor
 }
 
-function factorial (N) {
-  let result = 1
-
-  while (N > 0) {
-    result *= N
-    N -= 1
+const factorial = (() => {
+  const memoizationHelper = {
+    '0': 1
   }
 
-  return result
-}
+  return function innerFactorial (n) {
+    if (!memoizationHelper[n]) {
+      memoizationHelper[n] = n * innerFactorial(n - 1)
+    }
+
+    return memoizationHelper[n]
+  }
+})()
+
+module.exports = solution
